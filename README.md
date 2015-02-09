@@ -20,7 +20,6 @@ Steps to configure and build the project after you clone it:
   - export PYTHONPATH=$PYTHONPATH:$BAKE_HOME
 
 - Configure bake:
-  - cp bakeconf_rong.xml bake/ ???
   - bake.py configure -c bakeconf_rong.xml -p rong -i ns3 --sourcedir=.
   
 - Download dependencies:
