@@ -31,7 +31,6 @@ Steps to configure and build the project after you clone it:
   
 - Build lua static:
   - Follow the indications in the corresponding README
-  - Copy the lua executable obtained in utils
 
 Running an example:
 
