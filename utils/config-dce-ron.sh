@@ -6,7 +6,7 @@ aux=$(($cant_nodes-1))
 
 for i in `seq 0 $aux`; do
 
-  mkdir ../ns-3-dce-git/"files-$i"
+  mkdir ns-3-dce-git/"files-$i"
   
   n=$(($i+1))
 	
@@ -43,10 +43,10 @@ local conf = {
   protocol = 'rwalk',
   
   ---[[
-  transfer_port = 0,"  >> ../ns-3-dce-git/files-$i/"rong-node.lua"
+  transfer_port = 0,"  >> ns-3-dce-git/files-$i/"rong-node.lua"
   
   if [ $i = '0' ]; then
-    echo "  create_token = 'TOKEN@'..n," >> ../ns-3-dce-git/files-$i/"rong-node.lua"
+    echo "  create_token = 'TOKEN@'..n," >> ns-3-dce-git/files-$i/"rong-node.lua"
   fi
   
   echo "  --]]
@@ -85,6 +85,6 @@ rong:notificate(
   }  
 )
 
-sched.loop()"  >> ../ns-3-dce-git/files-$i/"rong-node.lua"
+sched.loop()"  >> ns-3-dce-git/files-$i/"rong-node.lua"
 
 done

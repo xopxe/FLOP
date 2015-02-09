@@ -36,9 +36,7 @@ Steps to configure and build the project after you clone it:
 Running an example:
 
 - Copy some files into ns3:
-  - cd utils
-  - sh config-dce-rong.sh
-  - cd ..
+  - sh utils/config-dce-rong.sh 12
 
 - Run a simulation:
   - cd ns-3-dce-git
