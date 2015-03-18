@@ -1,0 +1,23 @@
+#Scite backup
+*~
+
+#vim swap
+*.swp
+*.sublime-*
+
+*.bak
+
+#generated directories
+bakeSetEnv.sh
+bakefile.xml
+bake/*
+elf-loader/*
+gccxml/*
+libaspect/*
+netanim/*
+ns-3-dev-dce/*
+ns3/*
+pybindgen/*
+
+
+
