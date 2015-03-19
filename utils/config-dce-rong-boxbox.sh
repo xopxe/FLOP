@@ -42,24 +42,28 @@ local conf = {
     dontroute	= 0,
   },
   send_views_timeout =  60, --5
-  
+
+  inventory_size = 50,
+
+--[[  
   protocol = 'ron',
   max_hop_count = math.huge,
-  inventory_size = 50,
   delay_message_emit = 20,
   reserved_owns =50,
   max_owning_time = math.huge,
   max_ownnotif_transmits = math.huge,
   max_notif_transmits = 10,
-
   max_notifid_tracked = 5000,
-
 	ranking_find_replaceable = 'find_replaceable_fifo',
   min_n_broadcasts = 0,
-
 	gamma = 0.9998,
 	p_encounter = 0.05,
 	min_p = 0,
+--]]
+
+  protocol = 'epidemic',
+  transfer_port = 0,
+  max_hop_count = math.huge,
 
 }
 
@@ -69,7 +73,7 @@ math.randomseed(n)
 log('TEST', 'INFO', 'Creating service %s', tostring(n))
 local rong = require 'rong'.new(conf)
 
-if n==2 or n==3 then 
+if n<=3 then 
 	local s = rong:subscribe(
 		'SUB1@'..conf.name, 
 		{
@@ -97,9 +101,20 @@ local send_notification = function(target)
   )
 end
 
+--[[
 if n==1 then
 	sched.run( function()
 		while true do
+			send_notification('node3')
+		  sched.sleep(notifaction_rate)
+		end
+	end)
+end
+--]]
+if n==2 then
+	sched.run( function()
+		while true do
+			send_notification('node1')
 			send_notification('node3')
 		  sched.sleep(notifaction_rate)
 		end
