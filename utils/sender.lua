@@ -1,18 +1,16 @@
 local socket = require 'socket'
+io.stdout:setvbuf('line') 
 
+local address, port = '10.1.0.2', 8888 
 
-local udp_out = assert(socket.udp())
-assert (udp_out:setsockname('10.1.0.1', 0))
-assert (udp_out:setoption('broadcast', true))
---assert (udp_out:setoption('dontroute', false))
-assert (udp_out:setpeername('10.1.255.255', 8888))
-
-print (udp_out:getpeername())
-
+print('sending')
 local i=1
 while true do
- local m='M '..i
- assert(udp_out:send(m))
- socket.sleep(1)
- i=i+1
+	local m='M '..i
+	local fd=assert(socket.connect(address, port, '*', 0))
+	local m, err = fd:receive('*a')
+	--print(m)
+	fd:close()
+ 	socket.sleep(1)
+ 	i=i+1
 end
