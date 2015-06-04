@@ -1,1 +1,9 @@
-WARNING, A NO LOG ENTRY FOUND IN	../../ns-3-dce-git/files-14/var/log/18380/stdout
+bytes transmited:	34671479
+simulated time:	84047.045799971
+total sent:	561	total arrived	553	delivery rate	0.98573975044563
+accumulated buffer use by target on nodes 3..52
+	node1	38352
+	node3	20995
+accumulated buffer use by target on nodes 53..102
+	node1	22385
+	node3	36785

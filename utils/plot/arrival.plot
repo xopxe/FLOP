@@ -2,7 +2,7 @@
 #clear
 set title ""
 
-set xrange [0:]
+set xrange [0:100000]
 set yrange [0:]
 
 set xlabel 'Transmission time'

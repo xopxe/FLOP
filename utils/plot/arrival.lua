@@ -1,5 +1,26 @@
 #!/bin/lua
 
+--[[ --20
+local ranges = {
+  ['A'] = {3, 12},
+  ['B'] = {13, 22},
+}
+--]]
+
+--[[ --40
+local ranges = {
+  ['A'] = {3, 22},
+  ['B'] = {23, 42},
+}
+--]]
+
+---[[ --100
+local ranges = {
+  ['A'] = {3, 52},
+  ['B'] = {53, 102},
+}
+--]]
+
 local tonumber, ipairs, pairs = tonumber, ipairs, pairs 
 
 function os.capture(cmd, raw)
@@ -17,6 +38,7 @@ local first_ts=math.huge
 local last_ts=0
 local notifs = {}
 local buff_occupation = {}
+local p_evolution = {}
 local targets = {}
 
 
@@ -26,6 +48,7 @@ local process_file = function (filename)
   local f = assert(io.open(filename,'r'))
 	local ts
   local buff_hist = {}
+  local p_hist = {}
 
   for line in f:lines() do
     local sid, target, nid
@@ -71,6 +94,17 @@ local process_file = function (filename)
             buffreg[words[i]] = words[i+1]
           end
           buff_hist[#buff_hist+1] = buffreg
+        else
+          --1262390004 TEST-INFO: SUBSCRIPTION P FOR SUB1@node2 = 0.126011
+          local target, p 
+          ts, target, p = line:match('^(%S*) TEST%-INFO: SUBSCRIPTION P FOR SUB1\@(.*) = (.*)$')
+          ts = tonumber(ts)
+          p = tonumber(p)
+          if ts and target and p then
+            local words = {}
+            local preg = { ts=ts, p=p, target=target }
+            p_hist[#p_hist+1] = preg
+          end
         end
       end
     end
@@ -84,7 +118,9 @@ local process_file = function (filename)
   if last_ts<ts then last_ts=ts end
   
   local n = tonumber(filename:match('files%-(%d+)/'))
-  buff_occupation[n] = buff_hist  
+  buff_occupation[n] = buff_hist
+  p_evolution[n] = p_hist
+  f:close()
 end
 
 ---[[
@@ -138,11 +174,11 @@ end
 
 -----------------------------------------------------------------
 -- buffer occupation
-do
+local buff_compute = function (region_name, node_range)
   local buff_totals = {}
   local buff_range = {}
-  local f = assert(io.open('buffer.data', 'w'))
-  local node_range={3, 12}
+  local f = assert(io.open('buffer_'..region_name..'.data', 'w'))
+--  local node_range={3, 12}
   for node = node_range[1], node_range[2] do
     for i, reg in ipairs(buff_occupation[node]) do
       local range = buff_range[i] or {ts = reg.ts-first_ts}
@@ -176,5 +212,44 @@ do
   print ('accumulated buffer use by target on nodes '..node_range[1]..'..'..node_range[2])
   for k, v in pairs(buff_totals) do print ('', k, v) end
 end
+
+buff_compute ( 'A', ranges['A'])
+buff_compute ( 'B', ranges['B'])
 -----------------------------------------------------------------
 
+
+
+
+-----------------------------------------------------------------
+-- sub quality 
+local p_compute = function (region_name, node_range)
+  local p_totals = {}
+
+  for node = node_range[1], node_range[2] do
+    for i, reg in ipairs(p_evolution[node]) do
+      local dest_totals = p_totals[reg.target] or {}
+      p_totals[reg.target] = dest_totals
+      local totals = dest_totals[reg.ts-first_ts] or {sum = 0, count = 0}
+      dest_totals[reg.ts-first_ts] = totals
+      
+      totals.sum = totals.sum + reg.p
+      totals.count = totals.count + 1
+    end  
+  end
+
+  for target, totals in pairs(p_totals) do
+    local avg_array = {}
+    for ts, reg in pairs (totals) do
+      avg_array[#avg_array+1] = {ts=ts, p = reg.sum/reg.count}
+    end
+    table.sort(avg_array, function(a, b) return a.ts<b.ts end)
+    local f = assert(io.open('p_'..region_name..'_'..target..'.data', 'w'))
+    for _, reg in ipairs(avg_array) do
+      f:write(reg.ts..'\t'..reg.p..'\n')
+    end
+    f:close()
+  end
+end
+p_compute ( 'A', ranges['A'])
+p_compute ( 'B', ranges['B'])
+-----------------------------------------------------------------
