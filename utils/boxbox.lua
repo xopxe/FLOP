@@ -52,10 +52,10 @@ local conf = {
   max_hop_count = math.huge,
   delay_message_emit = 1,
   message_inhibition_window = 300,
-  reserved_owns =50,
+  reserved_owns = 500,
   max_owning_time = math.huge,
   max_ownnotif_transmits = math.huge,
-  max_notif_transmits = 10, --10
+  max_notif_transmits = 20, --10
   max_notifid_tracked = 5000,
 	ranking_find_replaceable = 'find_replaceable_fifo',
   min_n_broadcasts = 0,
@@ -64,6 +64,20 @@ local conf = {
 	min_p = 0,
 	--]]
 
+	--[[  
+  protocol = 'flop',
+  max_hop_count = math.huge,
+  delay_message_emit = 1,
+  message_inhibition_window = 300,
+  reserved_owns =50,
+  max_owning_time = math.huge,
+  max_ownnotif_transmits = math.huge,
+  max_notif_transmits = 10, --10
+  max_notifid_tracked = 5000,
+	ranking_find_replaceable = 'find_fifo_not_on_path',
+  min_n_broadcasts = 0,
+	--]]
+  
 	--[[  
   protocol = 'trw',
   transfer_port = 0,
