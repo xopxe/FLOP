@@ -17,6 +17,7 @@ local log = require 'lumen.log'
 
 log.format = '%T %m-%s: %l'
 --log.setlevel('DETAIL', 'RONG')
+log.setlevel('ALL', 'FLOP')
 log.setlevel('ALL', 'RONG')
 log.setlevel('ALL', 'TRW')
 log.setlevel('ALL', 'BSW')
@@ -47,12 +48,12 @@ local conf = {
 
   inventory_size = 30,
 
-	---[[  
+	--[[  
   protocol = 'ron',
   max_hop_count = math.huge,
   delay_message_emit = 1,
   message_inhibition_window = 300,
-  reserved_owns = 500,
+  reserved_owns = 50,
   max_owning_time = math.huge,
   max_ownnotif_transmits = math.huge,
   max_notif_transmits = 20, --10
@@ -64,7 +65,7 @@ local conf = {
 	min_p = 0,
 	--]]
 
-	--[[  
+	---[[  
   protocol = 'flop',
   max_hop_count = math.huge,
   delay_message_emit = 1,
@@ -72,7 +73,7 @@ local conf = {
   reserved_owns =50,
   max_owning_time = math.huge,
   max_ownnotif_transmits = math.huge,
-  max_notif_transmits = 10, --10
+  max_notif_transmits = 20, --10
   max_notifid_tracked = 5000,
 	ranking_find_replaceable = 'find_fifo_not_on_path',
   min_n_broadcasts = 0,
@@ -210,6 +211,14 @@ sched.run(function()
     if conf.protocol=='ron' then
       for sid, s in pairs(rong.view) do
         log('TEST', 'INFO', 'SUBSCRIPTION P FOR %s = %f', sid, s.meta.p)
+      end
+    end
+    
+    if conf.protocol=='flop' then
+      for sid, s in pairs(rong.view) do
+        local out = {}
+        for n, _ in pairs (s.meta.visited) do out[#out+1] = n end
+        log('TEST', 'INFO', 'VISITED FOR %s = {%s}', sid, table.concat(out,' '))
       end
     end
     
