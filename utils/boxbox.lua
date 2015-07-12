@@ -36,6 +36,7 @@ local notifaction_rate = 300    -- secs between notifs
 local token_creation_probability = 1/2 --for trw
 
 local conf = {
+  encoder = 'lumen.lib.bencode',
   name = 'node'..n, --must be unique
   protocol_port = 8888,
   listen_on_ip = '10.1.0.'..n, 
@@ -77,6 +78,11 @@ local conf = {
   max_notifid_tracked = 5000,
 	ranking_find_replaceable = 'find_fifo_not_on_path',
   min_n_broadcasts = 0,
+  q_decay = 0.9999,
+  q_reinf = 0.1,
+  view_skip_list = true, 
+  
+  max_path_count = 20,
 	--]]
   
 	--[[  
