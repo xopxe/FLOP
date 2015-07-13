@@ -23,6 +23,7 @@ log.setlevel('ALL', 'RON')
 log.setlevel('ALL', 'EPIDEMIC')
 log.setlevel('ALL', 'TEST')
 log.setlevel('ALL', 'SELECTOR')
+log.setlevel('ALL', 'HTTP')
 --log.setlevel('ALL')
 
 local sched = require 'lumen.sched'
@@ -73,12 +74,18 @@ local conf = {
   max_ownnotif_transmits = math.huge,
   max_notif_transmits = 10, --10
   max_notifid_tracked = 5000,
+  view_skip_list = false,
 	ranking_find_replaceable = 'find_fifo_not_on_path',
   min_n_broadcasts = 0,
   max_path_count = 3,
   q_decay = 0.999,
   q_reinf = 0.1,
-  view_skip_list = false,
+  
+  attachments = {},
+  http_conf = {
+    ip='10.1.0.'..n, 
+    port=8080,
+  },
 	--]]
   
 	--[[  
@@ -117,11 +124,14 @@ local rong = require 'rong'.new(conf)
 
 
 local number_of_chunks = 20
+local chunk_size = 10000 --1000000
 
 local send_notification = function(chunk)
   log('TEST', 'INFO', 'NOTIFICATING chunk %s', tostring(chunk))
+  local mid= '/N'..chunk..'.chunk' --must be a filename
+  conf.attachments[mid] = string.rep('x', chunk_size)
   rong:notificate(
-    'N'..chunk,
+    mid,
     {
       filename = 'file.avi',
       chunk = chunk,
