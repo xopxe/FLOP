@@ -1,11 +1,8 @@
 -- this should be copied  in  ns-3-dce-git/"files-N"
 -- set this in __N__HERE__ label below
+-- This will be done by the installation script.
 local N = assert(tonumber(__N__HERE__), 'must set N value before running') 
-
---local experiment = 'symmetrical'
-
 local n = N + 1
--- local cant_tokens=$2
 
 --require 'strict'
 --look for packages one folder up.
@@ -27,9 +24,14 @@ local sched = require 'lumen.sched'
 local selector = require 'lumen.tasks.selector'
 selector.init({service='luasocket'})
 
-local notifaction_rate = 300    -- secs between notifs
-local token_creation_probability = 1/2 --for trw
+-- Number of chunks the file is split
+local number_of_chunks = 20
 
+-- Size of each chunk
+local chunk_size = 100000
+
+
+-- This is the configuration for the flop service
 local conf = {
   name = 'node'..n, --must be unique
   protocol_port = 8888,
@@ -39,39 +41,48 @@ local conf = {
     broadcast	= 1,
     dontroute	= 0,
   },
-  send_views_timeout =  5, --5
+  
+  -- rate of the beakon broadcast
+  send_views_timeout =  5,
 
+  -- buffer size
   inventory_size = 10,
-  reserved_owns = 50,
+  reserved_owns = 50, -- for the messages publishes by the node itself
 
   protocol = 'flop',
   max_hop_count = math.huge,
+  
+  -- notification forwarding prameters
   delay_message_emit = 1,
-  message_inhibition_window = 0, --10,
+  message_inhibition_window = 1, --10,
+  
+  -- buffer management parameters
   max_owning_time = math.huge,
-  max_ownnotif_transmits = 20, --math.huge,
-  max_notif_transmits = 20, --math.huge, --10
-  max_chunk_downloads = 3,
+  max_ownnotif_transmits = 20,
+  max_notif_transmits = 20,
+  max_chunk_downloads = 3, -- how many times will allow a chunk to be downloaded
   max_notifid_tracked = 5000,
   view_skip_list = false,
 	ranking_find_replaceable = 'find_fifo_not_on_path',
   min_n_broadcasts = 0,
+  
+  -- routing parameters
   max_path_count = 3,
   q_decay = 0.999,
   q_reinf = 0.1,
   
+  -- timeout before aborting a chunk download
   http_get_timeout = 1,
   
   attachments = {},
+  
+  -- where the chunks will be served
   http_conf = {
     ip='10.1.0.'..n, 
     port=8080,
   },
 
-
   --neighborhood_window = 1, -- for debugging, should be disabled
-
-
 }
 
 io.stdout:setvbuf('line') 
@@ -80,13 +91,8 @@ math.randomseed(n)
 for k, v in pairs(conf) do
   log('TEST', 'INFO', 'Configuration %s=%s', tostring(k), tostring(v))
 end
-
 log('TEST', 'INFO', 'Creating service %s', tostring(n))
 local rong = require 'rong'.new(conf)
-
-
-local number_of_chunks = 50 --20
-local chunk_size = 100000 --1000000
 
 local send_notification = function(chunk)
   log('TEST', 'INFO', 'NOTIFICATING chunk %s', tostring(chunk))
@@ -112,7 +118,9 @@ if n==1 then
 end
 
 sched.run(function()
-  sched.sleep(math.random())
+  sched.sleep(math.random()) --small random sleep to avoid synchronization
+  
+  -- initialize subscription
   log('TEST', 'INFO', 'SUBSCRIBING FOR no data')
   local s = rong:subscribe(
     'SUB@'..conf.name, 
@@ -122,6 +130,8 @@ sched.run(function()
   )
   log('TEST', 'INFO', 'SUBSCRIBED FOR no data', 
     tostring(s.filter[1][1]), tostring(s.filter[1][2]), tostring(s.filter[1][3]))
+  
+  -- consume notifs as they arrive and request the next
   local arrived = {}
   sched.sigrun({s, buff_mode='keep_last'}, function(s, n) 
     local arrived_chunk
@@ -148,8 +158,10 @@ sched.run(function()
     end
   end)
 
+  -- initial sleep before starting
   sched.sleep(100+(n-1)*10)
   
+  -- request the first chunk
   log('TEST', 'INFO', 'SUBSCRIBING FOR chunk=%i', 1)
   local s = rong:update_subscription(
     'SUB@'..conf.name, 
@@ -162,7 +174,7 @@ sched.run(function()
     tostring(s.filter[1][1]),tostring(s.filter[1][2]), tostring(s.filter[1][3]))
 end)
 
-
+-- periodically log internal data
 sched.run(function()
   while true do
     sched.sleep(conf.send_views_timeout*20)

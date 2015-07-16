@@ -30,15 +30,21 @@ Steps to configure and build the project after you clone it:
   - bake.py build
   
 - Build lua static:
-  - Follow the indications in the corresponding README
+  - Follow the indications in lua-static/README.md 
 
 Running an example:
 
 - Copy some files into ns3:
-  - sh utils/config-dce-rong.sh 12 4
+  - sh utils/config-dce-flopmicro.sh
 
 - Run a simulation:
   - cd ns-3-dce-git
-  - ./waf --run dce-ron-simple
+  - ./waf --run dce-ron-microbus
   
-  
+- Explanation:
+  The simulation scenario is defined in "ns-3-dce-git\/myscripts\/rom/dce-rong-microbus.cc". It specifies a scenario with 6 nodes over 1000sec. It contains 4 static nodes closely placed (nodes 1..4), and two mobile nodes (5 and 6) moving on the perifery and approaching the first 4 only from time to time.  
+  The config-dce-flopmicro.sh script creates one directory per node (named "ns-3-dce-git/files-X" where X is 0..5) and copies the main script.
+The ouptut of the script is sent to "files-*\/var\/log\/*\/"  
+  The script is "utils/flopmicro.lua". It holds the code running in each node. What it does, roughly, is to publish 20 chunks, 100kb each, on node 1. The nodes subscribe to the chunks in order (as soon as thery get one they request the next). Chunk posting starts at t=100s, once per 10s. Receivers start at t=100 for node1, t=110 for node2, etc.  
+
+
