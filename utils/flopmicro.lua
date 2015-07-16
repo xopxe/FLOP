@@ -15,15 +15,11 @@ local log = require 'lumen.log'
 
 log.format = '%T %m-%s: %l'
 --log.setlevel('DETAIL', 'RONG')
-log.setlevel('ALL', 'FLOP')
-log.setlevel('ALL', 'RONG')
-log.setlevel('ALL', 'TRW')
-log.setlevel('ALL', 'BSW')
-log.setlevel('ALL', 'RON')
-log.setlevel('ALL', 'EPIDEMIC')
-log.setlevel('ALL', 'TEST')
-log.setlevel('ALL', 'SELECTOR')
+log.setlevel('DETAIL', 'FLOP')
+log.setlevel('DETAIL', 'RONG')
+log.setlevel('DETAIL', 'SELECTOR')
 log.setlevel('ALL', 'HTTP')
+log.setlevel('ALL', 'TEST')
 --log.setlevel('ALL')
 
 local sched = require 'lumen.sched'
@@ -45,34 +41,17 @@ local conf = {
   },
   send_views_timeout =  5, --5
 
-  inventory_size = 5,
+  inventory_size = 10,
+  reserved_owns = 50,
 
-	--[[  
-  protocol = 'ron',
-  max_hop_count = math.huge,
-  delay_message_emit = 1,
-  message_inhibition_window = 300,
-  reserved_owns =50,
-  max_owning_time = math.huge,
-  max_ownnotif_transmits = math.huge,
-  max_notif_transmits = 5, --10
-  max_notifid_tracked = 5000,
-	ranking_find_replaceable = 'find_replaceable_fifo',
-  min_n_broadcasts = 0,
-	gamma = 0.9998,
-	p_encounter = 0.1,
-	min_p = 0,
-	--]]
-
-	---[[  
   protocol = 'flop',
   max_hop_count = math.huge,
   delay_message_emit = 1,
-  message_inhibition_window = 10,
-  reserved_owns =50,
+  message_inhibition_window = 0, --10,
   max_owning_time = math.huge,
-  max_ownnotif_transmits = math.huge,
-  max_notif_transmits = 10, --10
+  max_ownnotif_transmits = 20, --math.huge,
+  max_notif_transmits = 20, --math.huge, --10
+  max_chunk_downloads = 3,
   max_notifid_tracked = 5000,
   view_skip_list = false,
 	ranking_find_replaceable = 'find_fifo_not_on_path',
@@ -81,31 +60,14 @@ local conf = {
   q_decay = 0.999,
   q_reinf = 0.1,
   
+  http_get_timeout = 1,
+  
   attachments = {},
   http_conf = {
     ip='10.1.0.'..n, 
     port=8080,
   },
-	--]]
-  
-	--[[  
-  protocol = 'trw',
-  transfer_port = 0,
-  token_hold_time = 200,
-  --]]
-  
-	--[[
-  protocol = 'epidemic',
-  transfer_port = 0,
-  max_hop_count = 10000,
-	--]]
 
-	--[[
-  protocol = 'bsw',
-  transfer_port = 0,
-  max_hop_count = 10000,
-  start_copies = 64,
-	--]]
 
   --neighborhood_window = 1, -- for debugging, should be disabled
 
@@ -123,8 +85,8 @@ log('TEST', 'INFO', 'Creating service %s', tostring(n))
 local rong = require 'rong'.new(conf)
 
 
-local number_of_chunks = 20
-local chunk_size = 10000 --1000000
+local number_of_chunks = 50 --20
+local chunk_size = 100000 --1000000
 
 local send_notification = function(chunk)
   log('TEST', 'INFO', 'NOTIFICATING chunk %s', tostring(chunk))
@@ -147,41 +109,58 @@ if n==1 then
       sched.sleep(10)
     end
   end)
-else
-  sched.run(function()
-    local s = rong:subscribe(
-      'SUB@'..conf.name, 
-      {
-        {'filename', '=', 'none' },
-      }
-    )
-    --log('TEST', 'INFO', 'SUBSCRIBING FOR chunk%s%s', tostring(s.filter[1][2]), tostring(s.filter[1][3]))
-    local arrived = {}
-    sched.sigrun({s}, function(s, n) 
-      if not arrived[n.id] then 
-        log('TEST', 'INFO', 'ARRIVED FOR %s: %s',tostring(s.id), tostring(n.id))
-        for k, v in pairs (n.data) do
-          log('TEST', 'INFO', '>>>>> %s=%s',tostring(k), tostring(v))
-        end
-        arrived[n.id] = true
+end
+
+sched.run(function()
+  sched.sleep(math.random())
+  log('TEST', 'INFO', 'SUBSCRIBING FOR no data')
+  local s = rong:subscribe(
+    'SUB@'..conf.name, 
+    {
+      {'filename', '=', 'none' },
+    }
+  )
+  log('TEST', 'INFO', 'SUBSCRIBED FOR no data', 
+    tostring(s.filter[1][1]), tostring(s.filter[1][2]), tostring(s.filter[1][3]))
+  local arrived = {}
+  sched.sigrun({s, buff_mode='keep_last'}, function(s, n) 
+    local arrived_chunk
+    if not arrived[n.id] then 
+      log('TEST', 'INFO', 'ARRIVED FOR %s: %s',tostring(s.id), tostring(n.id))
+      for k, v in pairs (n.data) do
+        log('TEST', 'INFO', '>>>>> %s=%s',tostring(k), tostring(v))
+        if k=='chunk' then arrived_chunk = v end
       end
-    end)
-  
-    sched.sleep(100)
-    sched.sleep(100)
-    for i=1,number_of_chunks do
-      rong:update_subscription(
+      assert(arrived_chunk)
+      arrived[n.id] = true
+       
+      sched.sleep(1)
+      log('TEST', 'INFO', 'SUBSCRIBING FOR chunk=%i', arrived_chunk+1)
+      local s=rong:update_subscription(
         'SUB@'..conf.name, 
         {
-          {'chunk', '>=', i},
+          {'chunk', '=', arrived_chunk+1},
           {'filename', '=', 'file.avi' },
         }
       )
-      log('TEST', 'INFO', 'SUBSCRIBING FOR chunk%s%s', tostring(s.filter[1][2]), tostring(s.filter[1][3]))
-      sched.sleep(10)
+      log('TEST', 'INFO', 'SUBSCRIBED FOR %s%s%s', 
+        tostring(s.filter[1][1]),tostring(s.filter[1][2]), tostring(s.filter[1][3]))
     end
   end)
-end
+
+  sched.sleep(100+(n-1)*10)
+  
+  log('TEST', 'INFO', 'SUBSCRIBING FOR chunk=%i', 1)
+  local s = rong:update_subscription(
+    'SUB@'..conf.name, 
+    {
+      {'chunk', '=', 1},
+      {'filename', '=', 'file.avi' },
+    }
+  )
+  log('TEST', 'INFO', 'SUBSCRIBED FOR %s%s%s', 
+    tostring(s.filter[1][1]),tostring(s.filter[1][2]), tostring(s.filter[1][3]))
+end)
 
 
 sched.run(function()
@@ -192,6 +171,9 @@ sched.run(function()
       local out = {}
       for n, _ in pairs (s.meta.visited) do out[#out+1] = n end
       log('TEST', 'INFO', 'VISITED FOR %s = {%s}', sid, table.concat(out,' '))
+      out = {}
+      for n, q in pairs (s.meta.q) do out[#out+1] =n..'='..string.format('%.2f',q) end
+      log('TEST', 'INFO', 'NODE Qs FOR %s = {%s}', sid, table.concat(out,','))
     end
     
     local taskcount = 0
