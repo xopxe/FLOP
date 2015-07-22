@@ -37,7 +37,7 @@ Steps to configure and build the project:
 ~/RonSimu$ bake.py configure -c bakeconf_rong.xml -p rong -i ns3 --sourcedir=.
 ~/RonSimu$ bake.py download
 ```
-Note, the last step will warn of one failure ">> Searching for system dependency pygraphviz - Problem". Thats ok, but nothing else should fail)
+Note, the last step will warn of one failure: ">> Searching for system dependency pygraphviz - Problem". Thats ok, but nothing else should fail.
 
 ```
 ~/RonSimu$ bake.py build
