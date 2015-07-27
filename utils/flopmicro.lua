@@ -19,16 +19,15 @@ log.setlevel('ALL', 'HTTP')
 log.setlevel('ALL', 'TEST')
 --log.setlevel('ALL')
 
-local sched = require 'lumen.sched'
-
-local selector = require 'lumen.tasks.selector'
-selector.init({service='luasocket'})
 
 -- Number of chunks the file is split
 local number_of_chunks = 20
 
 -- Size of each chunk
 local chunk_size = 100000
+
+-- Time between consecutive chunks
+local interchunk_time = 10
 
 
 -- This is the configuration for the flop service
@@ -85,6 +84,11 @@ local conf = {
   --neighborhood_window = 1, -- for debugging, should be disabled
 }
 
+
+local sched = require 'lumen.sched'
+local selector = require 'lumen.tasks.selector'
+selector.init({service='luasocket'})
+
 io.stdout:setvbuf('line') 
 math.randomseed(n)
 
@@ -107,12 +111,13 @@ local send_notification = function(chunk)
   )
 end
 
+-- Node 1 downloads data directly
 if n==1 then
   local sender = sched.run( function()
     sched.sleep(100)
     for i=1, number_of_chunks do
       send_notification(i)
-      sched.sleep(10)
+      sched.sleep(interchunk_time)
     end
   end)
 end
