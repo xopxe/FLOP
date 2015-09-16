@@ -33,7 +33,7 @@ log.setlevel('ALL', 'TEST')
 local number_of_chunks = 20
 
 -- Size of each chunk
-local chunk_size = 1000000
+local chunk_size = 100000
 
 -- Time between consecutive chunks
 local interchunk_time = 10
@@ -111,9 +111,9 @@ log('TEST', 'INFO', 'Creating service %s', tostring(n))
 local rong = require 'rong'.new(conf)
 
 local send_notification = function(chunk)
+  log('TEST', 'INFO', 'NOTIFICATING chunk %s', tostring(chunk))
   local mid= '/N'..chunk..'.chunk' --must be a filename
   conf.attachments[mid] = string.rep('x', chunk_size)
-  log('TEST', 'INFO', 'NOTIFICATING chunk %s: %i bytes', tostring(chunk), chunk_size)
   rong:notificate(
     mid,
     {
@@ -127,24 +127,12 @@ end
 if n==1 then
   local sender = sched.run( function()
     sched.sleep(100)
-    for i=1, number_of_chunks, 2 do
-    --for i=1, number_of_chunks do
+    for i=1, number_of_chunks do
       send_notification(i)
       sched.sleep(interchunk_time)
     end
   end)
 end
----[[
-if n==4 then
-  local sender = sched.run( function()
-    sched.sleep(100)
-    for i=2, number_of_chunks, 2 do
-      send_notification(i)
-      sched.sleep(interchunk_time)
-    end
-  end)
-end
---]]
 
 sched.run(function()
   sched.sleep(math.random()) --small random sleep to avoid synchronization

@@ -1,7 +1,7 @@
 #!/bin/lua
 
 --[[ --20
-local ranges = {
+--local ranges = {
   ['A'] = {3, 12},
   ['B'] = {13, 22},
 }
@@ -14,7 +14,7 @@ local ranges = {
 }
 --]]
 
----[[ --100
+--[[ --100
 local ranges = {
   ['A'] = {3, 52},
   ['B'] = {53, 102},
@@ -213,8 +213,8 @@ local buff_compute = function (region_name, node_range)
   for k, v in pairs(buff_totals) do print ('', k, v) end
 end
 
-buff_compute ( 'A', ranges['A'])
-buff_compute ( 'B', ranges['B'])
+--buff_compute ( 'A', ranges['A'])
+--buff_compute ( 'B', ranges['B'])
 -----------------------------------------------------------------
 
 
@@ -250,6 +250,6 @@ local p_compute = function (region_name, node_range)
     f:close()
   end
 end
-p_compute ( 'A', ranges['A'])
-p_compute ( 'B', ranges['B'])
+--p_compute ( 'A', ranges['A'])
+--p_compute ( 'B', ranges['B'])
 -----------------------------------------------------------------
