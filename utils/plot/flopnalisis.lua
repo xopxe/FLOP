@@ -47,9 +47,13 @@ local process_file = function (filename)
     else
       ts, bytes = line:match('^(%S*) FLOP%-DEBUG: Succesfull GET fragment[^%+]+%+(%S*) bytes%)$')
       if ts and bytes then
-        get_bytes = get_bytes + bytes
-        get_bytes_from[get_from] = get_bytes_from[get_from] + bytes
-        total_get_bytes_from[get_from] = total_get_bytes_from[get_from] + bytes
+        if get_from==1 or get_from==7 then
+          lte_bytes = lte_bytes + bytes
+        else
+          get_bytes = get_bytes + bytes
+          get_bytes_from[get_from] = get_bytes_from[get_from] + bytes
+          total_get_bytes_from[get_from] = total_get_bytes_from[get_from] + bytes
+        end
       else
         --1262304131.5957 FLOP-DETAIL: Requesting /N1.chunk?s=1 to 10.1.0.1:8080
         ts, ip = line:match('^(%S*) FLOP%-DETAIL: Requesting %S+ to 10%.1%.0%.(%S*):8080$')
@@ -58,11 +62,13 @@ local process_file = function (filename)
           get_bytes_from[get_from] = get_bytes_from[get_from] or 0
           total_get_bytes_from[get_from] = total_get_bytes_from[get_from] or 0
         else
+          --[[
           --1262304151 TEST-INFO: NOTIFICATING chunk 11: 100000 bytes
           ts, bytes = line:match('^(%S*) TEST%-INFO: NOTIFICATING chunk %S+: (%S+) bytes$')
           if ts and bytes then
             lte_bytes = lte_bytes + bytes
           end
+          --]]
         end
       end
     end
@@ -97,14 +103,14 @@ for file in files:gmatch('%S+') do
 end
 --]]
 
-local node_names = {'A', 'B', 'C', 'D', 'E',}
+local node_names = {'A', 'B', 'C', 'D', 'E','F'}
 
 local function jouls(lte_bytes, up_bytes, get_bytes, broadcast_bytes)
   local ujb =  3 * lte_bytes + 0.8*up_bytes + 0.8*get_bytes + 0.8 * broadcast_bytes
   return (ujb * 8) / 1000000
 end
 
-local jouls_clean_get = jouls(20000000, 0, 0, 0)
+local jouls_clean_get = jouls(2000000, 0, 0, 0)
 
 for k, v in pairs(total_traffic_on) do 
   local up_bytes = total_get_bytes_from[k] or 0
@@ -112,7 +118,7 @@ for k, v in pairs(total_traffic_on) do
   local broadcast_bytes = v.broadcast_bytes
   local lte_bytes = v.lte_bytes
   print (node_names[k], '&', lte_bytes, '&', up_bytes, '&', get_bytes, '&', 
-    broadcast_bytes, '&',  (get_bytes+lte_bytes)/ 20000000, '&', 
+    broadcast_bytes, '&',  (get_bytes+lte_bytes)/ 2000000, '&', 
     string.format('%.2f', jouls(lte_bytes, up_bytes, get_bytes, broadcast_bytes)/jouls_clean_get ), ' \\\\' )
 end
 
