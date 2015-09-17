@@ -103,7 +103,7 @@ for file in files:gmatch('%S+') do
 end
 --]]
 
-local node_names = {'A', 'B', 'C', 'D', 'E','F'}
+local node_names = {'X', 'A', 'B', 'C', 'D', 'E', 'Y', 'F', 'G', 'H', 'M'}
 
 local function jouls(lte_bytes, up_bytes, get_bytes, broadcast_bytes)
   local ujb =  3 * lte_bytes + 0.8*up_bytes + 0.8*get_bytes + 0.8 * broadcast_bytes

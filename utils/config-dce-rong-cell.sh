@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cant_nodes=6
+cant_nodes=11
 aux=$(($cant_nodes-1))
 
 for i in `seq 0 $aux`; do
