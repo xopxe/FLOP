@@ -47,7 +47,7 @@ local process_file = function (filename)
     else
       ts, bytes = line:match('^(%S*) FLOP%-DEBUG: Succesfull GET fragment[^%+]+%+(%S*) bytes%)$')
       if ts and bytes then
-        if get_from==1 or get_from==7 then
+        if get_from==1 or get_from==6 then
           lte_bytes = lte_bytes + bytes
         else
           get_bytes = get_bytes + bytes
@@ -103,7 +103,7 @@ for file in files:gmatch('%S+') do
 end
 --]]
 
-local node_names = {'X', 'A', 'B', 'C', 'D', 'E', 'Y', 'F', 'G', 'H', 'M'}
+local node_names = {'X', 'A', 'B', 'C', 'D', 'Y', 'E', 'F', 'G', 'H', 'M'}
 
 local function jouls(lte_bytes, up_bytes, get_bytes, broadcast_bytes)
   local ujb =  3 * lte_bytes + 0.8*up_bytes + 0.8*get_bytes + 0.8 * broadcast_bytes
