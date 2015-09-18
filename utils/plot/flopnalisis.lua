@@ -103,23 +103,25 @@ for file in files:gmatch('%S+') do
 end
 --]]
 
-local node_names = {'X', 'A', 'B', 'C', 'D', 'Y', 'E', 'F', 'G', 'H', 'M'}
+local node_names = {'X', 'A', 'B', 'C', 'D', 'Y', 'E', 'F', 'G', 'M'}
 
 local function jouls(lte_bytes, up_bytes, get_bytes, broadcast_bytes)
   local ujb =  3 * lte_bytes + 0.8*up_bytes + 0.8*get_bytes + 0.8 * broadcast_bytes
   return (ujb * 8) / 1000000
 end
 
-local jouls_clean_get = jouls(2000000, 0, 0, 0)
+local jouls_clean_get = jouls(20000000, 0, 0, 0)
 
 for k, v in pairs(total_traffic_on) do 
-  local up_bytes = total_get_bytes_from[k] or 0
-  local get_bytes = v.get_bytes
-  local broadcast_bytes = v.broadcast_bytes
-  local lte_bytes = v.lte_bytes
-  print (node_names[k], '&', lte_bytes, '&', up_bytes, '&', get_bytes, '&', 
-    broadcast_bytes, '&',  (get_bytes+lte_bytes)/ 2000000, '&', 
-    string.format('%.2f', jouls(lte_bytes, up_bytes, get_bytes, broadcast_bytes)/jouls_clean_get ), ' \\\\' )
+  if k~=1 and k~=6 then
+    local up_bytes = total_get_bytes_from[k] or 0
+    local get_bytes = v.get_bytes
+    local broadcast_bytes = v.broadcast_bytes
+    local lte_bytes = v.lte_bytes
+    print (node_names[k], '&', lte_bytes, '&', up_bytes, '&', get_bytes, '&', 
+      broadcast_bytes, '&',  (get_bytes+lte_bytes)/ 20000000, '&', 
+      string.format('%.2f', jouls(lte_bytes, up_bytes, get_bytes, broadcast_bytes)/jouls_clean_get ), ' \\\\' )
+  end
 end
 
 

@@ -34,7 +34,7 @@ log.setlevel('ALL', 'TEST')
 local number_of_chunks = 20
 
 -- Size of each chunk
-local chunk_size = 100000
+local chunk_size = 1000000
 
 -- Time between consecutive chunks
 local interchunk_time = 10
@@ -224,9 +224,9 @@ sched.run(function()
   local sleeptime = 0
   if n>=2 and n<=5 then
     sleeptime = 50  +(n-2)*50
-  elseif n>=7 and n<=10 then
+  elseif n>=7 and n<=9 then
     sleeptime = 300  +(n-7)*50
-  elseif n==11 then
+  elseif n==10 then
     sleeptime = 50 +(6-2)*50
   end
   log('TEST', 'INFO', 'SLEEPING FOR %s', tostring(sleeptime))
