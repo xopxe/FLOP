@@ -34,7 +34,7 @@ log.setlevel('ALL', 'TEST')
 local number_of_chunks = 20
 
 -- Size of each chunk
-local chunk_size = 500000
+local chunk_size = 250000
 
 -- Time between consecutive chunks
 local interchunk_time = 10
@@ -132,14 +132,14 @@ end
 log('TEST', 'INFO', 'Creating service %s', tostring(n))
 local rong = require 'rong'.new(conf)
 
-local send_notification = function(chunk)
-  local mid= '/N'..chunk..'.chunk' --must be a filename
+local send_notification = function(name, chunk)
+  local mid= '/'..name..chunk..'.chunk' --must be a filename
   conf.attachments[mid] = string.rep('x', chunk_size)
-  log('TEST', 'INFO', 'NOTIFICATING chunk %s: %i bytes', tostring(chunk), chunk_size)
+  log('TEST', 'INFO', 'NOTIFICATING chunk %s: %i bytes', tostring(mid), chunk_size)
   rong:notificate(
     mid,
     {
-      filename = 'file.avi',
+      filename = name..'.avi',
       chunk = chunk,
     }  
   )
@@ -150,110 +150,110 @@ if n==1 or n==6 then
   local sender = sched.run( function()
     --sched.sleep(100)
     for i=1, number_of_chunks do
-      send_notification(i)
+      send_notification('N', i)
+      send_notification('M', i)
       --sched.sleep(interchunk_time)
     end
   end)
 end
 
-
-sched.run(function()
-  sched.sleep(math.random()) --small random sleep to avoid synchronization
-  
-  -- initialize subscription
-  log('TEST', 'INFO', 'SUBSCRIBING FOR no data')
-  local s = rong:subscribe(
-    'SUB@'..conf.name, 
-    {
-      {'filename', '=', 'none' },
-    }
-  )
-  log('TEST', 'INFO', 'SUBSCRIBED FOR no data', 
-    tostring(s.filter[1][1]), tostring(s.filter[1][2]), tostring(s.filter[1][3]))
-  
-    --[[
-    rong:subscribe(
-    'sssssSUB@'..conf.name, 
-    {
-      {'filename', '=', 'none' },
-    }
-    --]]  
-  
-  local last_t
-  -- consume notifs as they arrive and request the next
-  local arrived = {}
-  sched.sigrun({s, buff_mode='keep_last', timeout=interchunk_abort_time}, function(sig, n) 
-    local arrived_chunk
-    if sig then 
-      if not arrived[n.id] then 
-        log('TEST', 'INFO', 'ARRIVED FOR %s: %s',tostring(s.id), tostring(n.id))
-        for k, v in pairs (n.data) do
-          log('TEST', 'INFO', '>>>>> %s=%s',tostring(k), tostring(v))
-          if k=='chunk' then arrived_chunk = v end
-        end
-        assert(arrived_chunk)
-        arrived[n.id] = true
-         
-        --sched.sleep(1)
-        log('TEST', 'INFO', 'SUBSCRIBING FOR chunk=%i', arrived_chunk+1)
-        s=rong:update_subscription(
-          'SUB@'..conf.name, 
-          {
-            {'chunk', '=', arrived_chunk+1},
-            {'filename', '=', 'file.avi' },
-          }
-        )
-        last_t = sched.get_time()
-        log('TEST', 'INFO', 'SUBSCRIBED FOR %s%s%s', 
-          tostring(s.filter[1][1]),tostring(s.filter[1][2]), tostring(s.filter[1][3]))
-      end
-    else
-        arrived_chunk = tonumber(s.filter[1][3])
-        if arrived_chunk and arrived_chunk>=1 and sched.get_time()-last_t>=interchunk_abort_time then
-          log('TEST', 'INFO', 'MISSED FOR %s: %s with %s',tostring(s.id), 
-            tostring(s.filter[1][3]), tostring(n))
+local get_client_task = function(name)
+  return function()
+    sched.sleep(math.random()) --small random sleep to avoid synchronization
+    
+    -- initialize subscription
+    log('TEST', 'INFO', 'SUBSCRIBING on %s FOR no data', name)
+    local s = rong:subscribe(
+      'SUB'..name..'@'..conf.name, 
+      {
+        {'filename', '=', 'none' },
+      }
+    )
+    log('TEST', 'INFO', 'SUBSCRIBED on %s FOR no data', name, 
+      tostring(s.filter[1][1]), tostring(s.filter[1][2]), tostring(s.filter[1][3]))
+    
+    local last_t
+    -- consume notifs as they arrive and request the next
+    local arrived = {}
+    sched.sigrun({s, buff_mode='keep_last', timeout=interchunk_abort_time}, function(sig, n) 
+      local arrived_chunk
+      if sig then 
+        if not arrived[n.id] then 
+          log('TEST', 'INFO', 'ARRIVED on %s FOR %s: %s', name, tostring(s.id), tostring(n.id))
+          for k, v in pairs (n.data) do
+            log('TEST', 'INFO', '>>>>> %s=%s',tostring(k), tostring(v))
+            if k=='chunk' then arrived_chunk = v end
+          end
+          assert(arrived_chunk)
+          arrived[n.id] = true
+           
           --sched.sleep(1)
-          log('TEST', 'INFO', 'SUBSCRIBING FOR chunk=%i', arrived_chunk+1)
+          log('TEST', 'INFO', 'SUBSCRIBING on %s FOR chunk=%i', name, arrived_chunk+1)
           s=rong:update_subscription(
-            'SUB@'..conf.name, 
+            'SUB'..name..'@'..conf.name, 
             {
               {'chunk', '=', arrived_chunk+1},
-              {'filename', '=', 'file.avi' },
+              {'filename', '=', name..'.avi' },
             }
           )
           last_t = sched.get_time()
-          log('TEST', 'INFO', 'SUBSCRIBED FOR %s%s%s', 
+          log('TEST', 'INFO', 'SUBSCRIBED on %s FOR %s%s%s', name,
             tostring(s.filter[1][1]),tostring(s.filter[1][2]), tostring(s.filter[1][3]))
         end
-    end
-  end)
+      else
+          arrived_chunk = tonumber(s.filter[1][3])
+          if arrived_chunk and arrived_chunk>=1 and sched.get_time()-last_t>=interchunk_abort_time then
+            log('TEST', 'INFO', 'MISSED on %s FOR %s: %s with %s', name, tostring(s.id), 
+              tostring(s.filter[1][3]), tostring(n))
+            --sched.sleep(1)
+            log('TEST', 'INFO', 'SUBSCRIBING on %s FOR chunk=%i', name, arrived_chunk+1)
+            s=rong:update_subscription(
+              'SUB'..name..'@'..conf.name, 
+              {
+                {'chunk', '=', arrived_chunk+1},
+                {'filename', '=', name..'.avi' },
+              }
+            )
+            last_t = sched.get_time()
+            log('TEST', 'INFO', 'SUBSCRIBED on %s FOR %s%s%s', name,
+              tostring(s.filter[1][1]),tostring(s.filter[1][2]), tostring(s.filter[1][3]))
+          end
+      end
+    end)
 
-  -- initial sleep before starting
-  local sleeptime = 0
-  if n>=2 and n<=5 then
-    sleeptime = 50  +(n-2)*50
-  elseif n>=7 and n<=9 then
-    sleeptime = 300  +(n-7)*50
-  elseif n==10 then
-    sleeptime = 50 +(6-2)*50
+    -- initial sleep before starting
+    local sleeptime = 0
+    if n>=2 and n<=5 then
+      sleeptime = 50  +(n-2)*50
+    elseif n>=7 and n<=9 then
+      sleeptime = 300  +(n-7)*50
+    elseif n==10 then
+      sleeptime = 50 +(6-2)*50
+    end
+    if name=='M' then
+      sleeptime=450-sleeptime
+    end
+    log('TEST', 'INFO', 'SLEEPING on %s FOR %s', name, tostring(sleeptime))
+    sched.sleep(sleeptime)
+
+    
+    -- request the first chunk
+    log('TEST', 'INFO', 'SUBSCRIBING on %s FOR chunk=%i', name, 1)
+    s = rong:update_subscription(
+      'SUB'..name..'@'..conf.name, 
+      {
+        {'chunk', '=', 1},
+        {'filename', '=', name..'.avi' },
+      }
+    )
+    last_t = sched.get_time()
+    log('TEST', 'INFO', 'SUBSCRIBED on %s FOR %s%s%s', name,
+      tostring(s.filter[1][1]),tostring(s.filter[1][2]), tostring(s.filter[1][3]))
   end
-  log('TEST', 'INFO', 'SLEEPING FOR %s', tostring(sleeptime))
-  sched.sleep(sleeptime)
-  
-  
-  -- request the first chunk
-  log('TEST', 'INFO', 'SUBSCRIBING FOR chunk=%i', 1)
-  s = rong:update_subscription(
-    'SUB@'..conf.name, 
-    {
-      {'chunk', '=', 1},
-      {'filename', '=', 'file.avi' },
-    }
-  )
-  last_t = sched.get_time()
-  log('TEST', 'INFO', 'SUBSCRIBED FOR %s%s%s', 
-    tostring(s.filter[1][1]),tostring(s.filter[1][2]), tostring(s.filter[1][3]))
-end)
+end
+
+sched.run(get_client_task('N'))
+sched.run(get_client_task('M'))
 
 -- periodically log internal data
 sched.run(function()
