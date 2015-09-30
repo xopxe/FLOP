@@ -58,7 +58,11 @@ local process_file = function (filename)
     ts = tonumber(ts)
 		if not ts then ts = tonumber(line:match('^(%S*) '))  end
   end
-  if not ts then print ('WARNING, A NO LOG ENTRY FOUND IN', filename) end
+  if not ts then 
+    --print ('WARNING, A NO LOG ENTRY FOUND IN', filename) 
+    f:close()
+    return
+  end
   if last_ts<ts then last_ts=ts end
 
   local n = tonumber(filename:match('files%-(%d+)/'))
@@ -92,8 +96,13 @@ local function jouls(lte_bytes, up_bytes, get_bytes, broadcast_bytes)
   return (ujb * 8) / 1000000
 end
 
+--local total_bytes =  1*20*500000
+--local total_bytes =  2*20*250000
+--local total_bytes =  3*20*166666
+local total_bytes =  4*20*125000
+--local total_bytes =  5*20*100000
 
-local jouls_clean_get = jouls(2*20*250000, 0, 0, 0)
+local jouls_clean_get = jouls(total_bytes, 0, 0, 0)
 
 local total_lte = 0
 local total_lte_count = 0
@@ -107,13 +116,13 @@ for k, v in pairs(total_traffic_on) do
     total_lte = total_lte + lte_bytes
     total_lte_count = total_lte_count + 1
     print (node_names[k], '&', lte_bytes, '&', get_bytes, '&', up_bytes, '&', 
-      broadcast_bytes, '&',  (get_bytes+lte_bytes)/ (2*20*250000), '&', 
+      broadcast_bytes, '&',  (get_bytes+lte_bytes)/ total_bytes, '&', 
       string.format('%.2f', jouls(lte_bytes, up_bytes, get_bytes, broadcast_bytes)/jouls_clean_get ), ' \\\\' )
   end
 end
 print ('\\hline')
   print ('Op & & & & & &', 
-    string.format('%.2f', total_lte/(total_lte_count*2*20*250000)), ' \\\\' )
+    string.format('%.2f', total_lte/(total_lte_count*total_bytes)), ' \\\\' )
 
 
 

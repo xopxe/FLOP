@@ -62,7 +62,11 @@ local process_file = function (filename)
     ts = tonumber(ts)
 		if not ts then ts = tonumber(line:match('^(%S*) '))  end
   end
-  if not ts then print ('WARNING, A NO LOG ENTRY FOUND IN', filename) end
+  if not ts then 
+    --print ('WARNING, A NO LOG ENTRY FOUND IN', filename) 
+    f:close()
+    return
+  end
   if last_ts<ts then last_ts=ts end
 
   local n = tonumber(filename:match('files%-(%d+)/'))
