@@ -1,0 +1,12 @@
+[submodule "lua-static"]
+	path = lua-static
+	url = https://github.com/mrichart/lua-static.git
+[submodule "ns-3-dce-git"]
+	path = ns-3-dce-git
+	url = https://github.com/mrichart/ns-3-dce-git.git
+[submodule "rong"]
+	path = rong
+	url = https://github.com/xopxe/rong.git
+[submodule "lumen"]
+	path = lumen
+	url = https://github.com/xopxe/lumen.git
