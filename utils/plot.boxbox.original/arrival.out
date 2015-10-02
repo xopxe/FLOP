@@ -1,0 +1,9 @@
+bytes transmited:	32818
+simulated time:	2290.9602000713
+total sent:	16	total arrived	3	delivery rate	0.1875
+accumulated buffer use by target on nodes 3..52
+	node1	137
+	node3	15
+accumulated buffer use by target on nodes 53..102
+	node1	118
+	node3	84
