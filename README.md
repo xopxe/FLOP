@@ -37,6 +37,7 @@ Steps to configure and build the project:
 ~/FLOP$ bake.py download
 ```
 Note, the last step will warn of one failure: ">> Searching for system dependency pygraphviz - Problem". Thats ok.
+
 FIXME: now seems to be failing pygccxml, which seems to be safe also.
 
 ```
@@ -68,13 +69,13 @@ If install fails, you may be missing some packages. Use "bake.py check" and "bak
 - Explanation:
 
   The runsims script does the following:
-* Runs the simulation 5 times, storing the results in the util\/plot\/flopnalisis2.txt file.
-* Each simulation run consists of the following:
-  * (re)create the ns\-3\-dce\-git\/files\-* folders, where the the environment for each node is stored.
-  * Run the utils\/config\-dce\-rong\-cell2.sh script, that will generate the main program for each node and store it in the above mentioned folder.
-  * Run ther mobility scenario, in this case dce-rong-cell (the source is at ns-3-dce-git\/myscripts\/ron\/dce\-rong\-cell.cc)
-  * The log for each execution is in ns-3-dce-git/files-*\/var\/log\/*\/
-  * The log parsing script is run.
+  * Runs the simulation 5 times, storing the results in the util\/plot\/flopnalisis2.txt file.
+  * Each simulation run consists of the following:
+    * (re)create the ns\-3\-dce\-git\/files\-* folders, where the the environment for each node is stored.
+    * Run the utils\/config\-dce\-rong\-cell2.sh script, that will generate the main program for each node and store it in the above mentioned folder.
+    * Run ther mobility scenario, in this case dce-rong-cell (the source is at ns-3-dce-git\/myscripts\/ron\/dce\-rong\-cell.cc)
+    * The log for each execution is in ns-3-dce-git/files-*\/var\/log\/*\/
+    * The log parsing script is run.
 
 
 
