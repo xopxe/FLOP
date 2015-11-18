@@ -1,8 +1,8 @@
-RonSimu - Ron Protocol Over NS3 Simulatior with DCE
+FLOP - Opporutunistic Protocols Over NS3 Simulatior with DCE
 ======
 
 This project consist of two different things:
-- Rong. The Ron Protocol Generation 2.
+- A set of opportunistic protocols, in particular FLOP.
 - The NS3 Simulator with ns-3-dce module and small modifications to simulate the protocol.
 
 Steps to configure and build the project:
@@ -18,7 +18,7 @@ Steps to configure and build the project:
 
 ```
 ~$ git clone https://github.com/rfuentess/FLOP.git
-~$ cd RonSimu/
+~$ cd FLOP/
 ~/FLOP$ git submodule init
 ~/FLOP$ git submodule update
 ~/FLOP$ cd ns-3-dce-git
@@ -62,7 +62,7 @@ If install fails, you may be missing some packages. Use "bake.py check" and "bak
 - Run the simulation
 
 ```
-~/FLOP$ ./runsims2.sh
+~/FLOP$ ./runsims.sh
 
 ```
 
