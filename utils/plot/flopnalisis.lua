@@ -20,8 +20,6 @@ local buff_occupation = {}
 local p_evolution = {}
 local targets = {}
 
-
-local total_sent = 0
 local total_get_bytes_from = {}
 local total_traffic_on = {}
 
@@ -34,11 +32,9 @@ local process_file = function (filename)
   local broadcast_bytes = 0
   local get_bytes = 0
   local lte_bytes = 0
-  local get_bytes_from = {}
-  local get_from
 
   for line in f:lines() do
-    local sid, target, nid, bytes, ip
+    local sid, target, nid, bytes, ip, get_from
     
     --1262304262.0081 FLOP-DEBUG: Broadcast view (654 bytes)    
     ts, bytes = line:match('^(%S*) FLOP%-DEBUG: Broadcast view %((%S*) bytes%)$')
@@ -58,7 +54,7 @@ local process_file = function (filename)
         end
       end
     end
-    
+   
     ts = tonumber(ts)
 		if not ts then ts = tonumber(line:match('^(%S*) '))  end
   end
@@ -100,8 +96,13 @@ local function jouls(lte_bytes, up_bytes, get_bytes, broadcast_bytes)
   return (ujb * 8) / 1000000
 end
 
+--local total_bytes =  1*20*500000
+--local total_bytes =  2*20*250000
+--local total_bytes =  3*20*166666
+local total_bytes =  4*20*125000
+--local total_bytes =  5*20*100000
 
-local jouls_clean_get = jouls(10000000, 0, 0, 0)
+local jouls_clean_get = jouls(total_bytes, 0, 0, 0)
 
 local total_lte = 0
 local total_lte_count = 0
@@ -115,13 +116,13 @@ for k, v in pairs(total_traffic_on) do
     total_lte = total_lte + lte_bytes
     total_lte_count = total_lte_count + 1
     print (node_names[k], '&', lte_bytes, '&', get_bytes, '&', up_bytes, '&', 
-      broadcast_bytes, '&',  (get_bytes+lte_bytes)/ 10000000, '&', 
+      broadcast_bytes, '&',  (get_bytes+lte_bytes)/ total_bytes, '&', 
       string.format('%.2f', jouls(lte_bytes, up_bytes, get_bytes, broadcast_bytes)/jouls_clean_get ), ' \\\\' )
   end
 end
 print ('\\hline')
   print ('Op & & & & & &', 
-    string.format('%.2f', total_lte/(total_lte_count*10000000)), ' \\\\' )
+    string.format('%.2f', total_lte/(total_lte_count*total_bytes)), ' \\\\' )
 
 
 

@@ -1,3 +1,0 @@
-correr:
-
-$ lua arrival.lua | tee arrival.out; gnuplot arrival.plot; gnuplot buffer.plot

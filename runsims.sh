@@ -3,8 +3,8 @@
 
 rm utils/plot/flopnalisis.txt
 
-for i in `seq 1 10`;
-#for i in `seq 1 1`;
+#for i in `seq 1 10`;
+for i in `seq 1 1`;
 do
 
 	rm -rf ns-3-dce-git/files-*
