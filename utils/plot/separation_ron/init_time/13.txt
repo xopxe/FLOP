@@ -1,0 +1,149 @@
+arrived:	node1#19	1
+arrived:	node3#7	1
+arrived:	node3#9	1
+arrived:	node1#14	1
+arrived:	node3#25	1
+arrived:	node3#17	1
+arrived:	node3#4	1
+arrived:	node3#22	1
+arrived:	node1#38	1
+arrived:	node3#30	1
+arrived:	node1#13	1
+arrived:	node3#5	1
+arrived:	node3#52	1
+arrived:	node3#20	1
+arrived:	node1#58	1
+arrived:	node3#2	1
+arrived:	node1#49	1
+arrived:	node3#37	1
+arrived:	node3#29	1
+arrived:	node3#57	1
+arrived:	node1#1	1
+arrived:	node1#47	1
+arrived:	node3#46	1
+arrived:	node1#31	1
+arrived:	node1#4	1
+arrived:	node3#16	1
+arrived:	node1#39	1
+arrived:	node1#16	1
+arrived:	node3#53	1
+arrived:	node1#37	1
+arrived:	node1#51	1
+arrived:	node1#20	1
+arrived:	node3#47	1
+arrived:	node3#56	1
+arrived:	node1#6	1
+arrived:	node3#41	1
+arrived:	node3#48	1
+arrived:	node3#43	1
+arrived:	node3#59	1
+arrived:	node1#5	1
+arrived:	node1#26	1
+arrived:	node3#45	1
+arrived:	node3#51	1
+arrived:	node1#7	1
+arrived:	node3#55	1
+arrived:	node3#40	1
+arrived:	node3#50	1
+arrived:	node3#27	1
+arrived:	node3#49	1
+arrived:	node3#35	1
+arrived:	node1#42	1
+arrived:	node3#54	1
+arrived:	node3#15	1
+arrived:	node1#35	1
+arrived:	node3#12	1
+arrived:	node1#52	1
+arrived:	node3#60	1
+arrived:	node3#42	1
+arrived:	node1#59	1
+arrived:	node3#39	1
+arrived:	node3#38	1
+arrived:	node3#44	1
+arrived:	node1#27	1
+arrived:	node3#13	1
+arrived:	node3#32	1
+arrived:	node1#18	1
+arrived:	node1#10	1
+arrived:	node1#25	1
+arrived:	node1#46	1
+arrived:	node3#6	1
+arrived:	node3#18	1
+arrived:	node1#3	1
+arrived:	node3#14	1
+arrived:	node3#34	1
+arrived:	node1#50	1
+arrived:	node1#23	1
+arrived:	node1#28	1
+arrived:	node3#21	1
+arrived:	node3#36	1
+arrived:	node1#55	1
+arrived:	node1#8	1
+arrived:	node3#8	1
+arrived:	node3#28	1
+arrived:	node1#40	1
+arrived:	node3#26	1
+arrived:	node1#24	1
+arrived:	node1#22	1
+arrived:	node3#33	1
+arrived:	node3#10	1
+arrived:	node3#19	1
+arrived:	node1#34	1
+arrived:	node1#48	1
+arrived:	node1#41	1
+arrived:	node3#31	1
+arrived:	node3#3	1
+arrived:	node3#1	1
+arrived:	node1#2	1
+arrived:	node3#11	1
+arrived:	node1#36	1
+arrived:	node3#58	1
+arrived:	node3#24	1
+arrived:	node1#12	1
+NOTIFS:
+node3	:	60	sent
+node1	:	60	sent
+SUBS:
+on	node1
+	node1	:	43	received
+on	node3
+	node3	:	59	received
+1262304604 - 0.5 - - - 1 1 - 1 1 - 1 - 
+1262304704 - 0.5 - - - 1 1 - 1 1 - 1 1 
+1262304804 1 0.5 - - 1 1 0.5 1 1 1 - 1 0.5 
+1262304904 0.5 0.5 - 0.5 0.5 0.5 0.5 0.5 0.7 1 - 1 0.4 
+1262305004 0.5 0.5 - 0.4 0.5 0.5 0.5 0.5 0.6 1 1 0.4 0.4 
+1262305104 0.5 0.5 - 0.4 0.7 0.7 0.5 0.7 0.6 0.33333333333333 0.6 0.4 0.4 
+1262305204 0.5 0.5 - 0.4 0.9 0.8 0.5 0.7 0.6 0.33333333333333 0.2 0.6 0.3 
+1262305304 0.5 0.5 - 0.4 0.9 1 0.5 0.7 0.6 0.33333333333333 0 0.6 0.3 
+1262305404 0.5 0.5 0.6 0.4 0.9 1 0.6 0.7 0.3 0.33333333333333 0 0.6 0.5 
+1262305504 0.9 0.5 0.2 0.4 0.9 1 0.7 0.7 0.2 0.1 0 0.3 0.5 
+1262305604 0.9 0.5 0.2 0.4 0.9 1 0.8 0.8 0.2 0.1 0 0.3 0.5 
+1262305704 0.9 0.5 0.2 0.4 0.9 1 0.8 0.8 0.1 0.1 0 0.2 0.4 
+1262305804 0.9 0.5 0.2 0.8 0.9 1 0.8 0.8 0.1 0.1 0 0.2 0.1 
+1262305904 0.9 0.5 0.2 0.9 0.9 0.9 1 0.8 0 0 0 0 0.1 
+1262306004 0.9 0.5 0.2 0.9 1 0.7 1 0.8 0 0 0 0 0 
+1262306104 0.9 0.5 0.2 0.9 1 0.7 0.9 0.8 0 0 0 0 0 
+1262306204 0.9 0.5 0.2 1 0.8 0.7 0.9 0.8 0 0 0 0 0 
+1262306304 0.9 0.5 0.2 1 0.8 0.7 0.9 1 0 0 0 0 0 
+1262306404 0.9 0.5 0 1 0.5 0.7 0.9 1 0 0 0 0 0 
+1262306504 0.9 0.5 0 1 0.5 0.7 0.9 1 0 0 0 0 0 
+1262306604 0.9 0.5 0 1 0.5 0.7 0.9 1 0 0 0 0 0 
+1262306704 0.9 0.5 0 1 0.5 0.7 0.9 1 0 0 0 0 0 
+1262306804 0.9 0.5 0 1 0.5 0.9 0.8 1 0 0 0 0 0 
+1262306904 0.9 0.5 0 0.9 0.5 0.9 0.7 0.9 0 0 0 0 0 
+1262307004 0.9 0.5 0 0.9 0.5 0.8 0.7 0.9 0 0 0 0 0 
+1262307104 0.9 0.5 0 0.9 0.5 0.1 0.7 0.9 0 0 0 0 0 
+1262307204 0.9 0.5 0 0.9 0.8 0.1 0.7 0.9 0 0 0 0 0 
+1262307304 1 0.5 0 0.9 0.7 0.1 0.7 0.9 0 0 0 0 0 
+1262307404 1 0.5 0 0.9 0.6 0.1 0.7 0.9 0 0 0 0 0 
+1262307504 1 0.5 0 0.9 0.4 0.1 0.7 0.9 0 0 0 0 0 
+1262307604 1 0.5 0 0.9 0.4 0.1 0.7 0.9 0 0 0 0 0 
+1262307704 1 0.5 0 0.9 0.4 0.5 0.7 0.9 0 0 0 0 0 
+1262307804 1 0.5 0 0.9 0.4 0.5 0.9 0.9 0 0 0 0 0 
+1262307904 1 0.5 0 0.9 0.4 0.6 0.9 0.9 0 0 0 0 0 
+1262308004 1 0.5 0 0.9 0.4 1 0.9 0.9 0 0 0.1 0 0 
+1262308104 1 0.5 0 0.9 0.4 1 0.9 0.9 0 0 0.1 0 0 
+1262308204 1 0.5 0 0.9 0.4 1 0.9 1 0 0 0.1 0 0 
+1262308304 1 0.5 0 1 0.8 1 1 1 0 0 0 0 0 
+1262308404 1 0.5 0 1 0.8 1 1 1 0 0 0 0 0 

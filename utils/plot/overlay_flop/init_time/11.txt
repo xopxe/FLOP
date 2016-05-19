@@ -1,0 +1,121 @@
+arrived:	node2#19	1
+arrived:	node2#3	1
+arrived:	node3#9	1
+arrived:	node3#17	1
+arrived:	node2#47	1
+arrived:	node2#2	1
+arrived:	node3#4	1
+arrived:	node2#22	1
+arrived:	node3#22	1
+arrived:	node3#5	1
+arrived:	node3#2	1
+arrived:	node2#4	1
+arrived:	node3#37	1
+arrived:	node3#29	1
+arrived:	node3#46	1
+arrived:	node2#23	1
+arrived:	node3#16	1
+arrived:	node2#8	1
+arrived:	node2#43	1
+arrived:	node2#48	1
+arrived:	node2#11	1
+arrived:	node3#14	1
+arrived:	node3#43	1
+arrived:	node2#34	1
+arrived:	node2#51	1
+arrived:	node3#45	1
+arrived:	node2#1	1
+arrived:	node2#40	1
+arrived:	node2#53	1
+arrived:	node2#6	1
+arrived:	node2#18	1
+arrived:	node2#15	1
+arrived:	node3#15	1
+arrived:	node2#50	1
+arrived:	node3#12	1
+arrived:	node2#49	1
+arrived:	node3#3	1
+arrived:	node3#44	1
+arrived:	node2#42	1
+arrived:	node3#1	1
+arrived:	node3#19	1
+arrived:	node2#37	1
+arrived:	node3#6	1
+arrived:	node3#32	1
+arrived:	node3#27	1
+arrived:	node3#38	1
+arrived:	node2#39	1
+arrived:	node3#21	1
+arrived:	node2#5	1
+arrived:	node2#46	1
+arrived:	node2#36	1
+arrived:	node2#20	1
+arrived:	node3#7	1
+arrived:	node2#21	1
+arrived:	node2#13	1
+arrived:	node2#12	1
+arrived:	node3#18	1
+arrived:	node2#10	1
+arrived:	node2#54	1
+arrived:	node2#24	1
+arrived:	node2#41	1
+arrived:	node3#10	1
+arrived:	node2#38	1
+arrived:	node3#13	1
+arrived:	node2#52	1
+arrived:	node2#32	1
+arrived:	node3#8	1
+arrived:	node2#14	1
+arrived:	node2#9	1
+arrived:	node3#11	1
+arrived:	node3#23	1
+arrived:	node2#7	1
+arrived:	node2#44	1
+arrived:	node2#45	1
+NOTIFS:
+node2	:	60	sent
+node3	:	60	sent
+SUBS:
+on	node2
+	node2	:	43	received
+on	node3
+	node3	:	31	received
+1262304604 0.5 - - - - - - 1 - - - - - 
+1262304704 0.5 - - - - - - 1 - - - - - 
+1262304804 0.5 - - - 0.5 1 - 1 - - - - - 
+1262304904 0.5 1 - 1 0.4 0.4 1 1 - - - - 1 
+1262305004 0.5 1 - 0.5 0.4 0.4 0.4 1 - - - - 1 
+1262305104 0.5 1 - 0.5 0.4 0.4 0.4 1 - - - 1 1 
+1262305204 0.5 1 - 0.6 0.4 0.4 0.4 1 1 - 1 1 1 
+1262305304 0.5 1 - 0.3 0.4 0.4 0.4 0.6 0.4 - 1 1 1 
+1262305404 0.5 0.4 1 0.4 0.4 0.4 0.4 0.6 0.4 1 1 1 1 
+1262305504 0.5 0.4 0.4 0.4 0.4 0.4 0.4 1 0.4 0.4 0.4 0.4 1 
+1262305604 0.5 0.4 0.4 0.4 0.4 0.4 0.4 1 0.4 0.4 0.4 0.4 0.8 
+1262305704 0.5 0.4 0.4 0.4 0.4 0.4 0.4 0.7 0.4 0.4 0 0.4 0.4 
+1262305804 0.5 0.4 0.4 0.4 0.4 0.4 0.3 0.5 0.4 0.4 0 0.4 0.4 
+1262305904 0.5 0.4 0.4 0.4 0.4 0.4 0.5 0.5 0.4 0.4 0 0.4 0.4 
+1262306004 0.5 0.4 0.4 0.5 0.4 0.8 0.6 0.5 0.4 0.4 0 0.4 0.4 
+1262306104 0.5 0.3 0.4 0.4 0.4 0.8 0.6 0.5 0.4 0.4 0 0.4 0 
+1262306204 0.5 0 0.4 0.2 0.4 0.8 0.6 0.5 0.3 0 0 0.4 0 
+1262306304 0.5 0 0.4 0.3 0.4 1 0.6 0.5 0.3 0 0 0.4 0 
+1262306404 0.5 0 0.2 0.3 0.4 1 0.5 0.5 0 0 0 0.4 0 
+1262306504 0.5 0 0.2 0.3 0.4 1 0.5 0.5 0 0 0 0 0 
+1262306604 0.5 0 0.2 0.3 0.4 1 0.5 0.5 0 0 0 0 0 
+1262306704 0.5 0 0.2 0.3 0.6 1 0.6 0.6 0 0 0 0 0 
+1262306804 0.5 0 0.2 0.3 0.7 1 0.6 0.5 0 0 0 0 0 
+1262306904 0.5 0 0 0.3 0.7 1 0.6 0.5 0 0 0 0 0 
+1262307004 0.5 0 0 0.5 1 1 0.6 0.6 0 0 0 0 0 
+1262307104 0.5 0 0 0.8 1 1 0.3 0.6 0 0 0 0 0 
+1262307204 0.5 0 0 0.8 1 1 0.3 0.6 0 0 0 0 0 
+1262307304 0.5 0 0 0.8 1 1 0.4 0.5 0 0 0 0 0 
+1262307404 0.5 0 0 0.8 1 1 0.6 0.6 0 0 0 0 0 
+1262307504 0.5 0 0 0.8 1 1 0.7 0.7 0 0 0 0 0 
+1262307604 0.5 0 0 0.7 1 1 0.7 0.7 0 0 0 0 0 
+1262307704 0.5 0 0 0.7 1 1 0.7 0.7 0 0 0 0 0 
+1262307804 0.5 0 0 0.7 1 1 0.7 0.7 0 0 0 0 0 
+1262307904 0.5 0 0 0.8 1 1 0.7 1 0 0 0 0 0 
+1262308004 0.5 0 0 0.8 1 1 0.7 1 0 0 0 0 0 
+1262308104 0.5 0 0 0.8 1 1 0.7 1 0 0 0 0 0 
+1262308204 0.5 0 0 0.9 1 1 0.9 1 0 0 0 0 0 
+1262308304 0.5 0 0 0.9 1 1 0.9 1 0 0 0 0 0 
+1262308404 0.5 0 0 0.9 1 1 0.9 1 0 0 0 0 0 
