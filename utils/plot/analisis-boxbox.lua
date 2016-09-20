@@ -17,6 +17,7 @@ local subscriptions = {}
 local notifications = {}
 local buffocup = {}
 local notif_arrived = {}
+local community_labels = {}
 
 local process_file = function (filename)
   local f = assert(io.open(filename,'r'))
@@ -27,7 +28,7 @@ local process_file = function (filename)
   local get_bytes = 0
 
   for line in f:lines() do
-    local sid, bytes, nid, flow_id, mid
+    local sid, bytes, nid, flow_id, mid, label
     
     if not node_number then 
       --1262304000 TEST-INFO: Creating service 5
@@ -82,7 +83,15 @@ local process_file = function (filename)
  
               buffocup_node[ts]=buffocup_node[ts] or {}
               buffocup_node[ts][flow_id] = tonumber(count)
-                           
+              
+            else
+              --1262308704 TEST-INFO: COMMUNITY LABEL node3
+              ts, label = line:match('^(%S*) TEST%-INFO: COMMUNITY LABEL (node%S+)$')
+              ts = tonumber(ts)
+              if ts and label then
+                local label_rec = {ts=ts, label=label, nid=node_number}
+                community_labels[#community_labels+1] = label_rec
+              end
             end
             
           end
@@ -127,6 +136,11 @@ for nid, v in pairs (subscriptions) do
   for flow_id, count in pairs (v) do
     print ('', flow_id, ':', count, 'received')
   end
+end
+
+
+for _, label_rec in ipairs(community_labels) do
+  print ('LABEL', label_rec.ts, label_rec.nid, label_rec.label)
 end
 
 

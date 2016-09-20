@@ -3,10 +3,10 @@
 
 #rm utils/plot/flopnalisis.txt
 
-#for i in `seq 1 10`;
-for i in `seq 1 20`;
+for i in `seq 1 1`;
+#for i in `seq 21 30`;
 do
-#for proto in bsw ron flop;
+#for proto in bsw ron flop epidemic;
 for proto in flop;
 do
 #for scenario in separation counterflow overlay;
@@ -23,11 +23,11 @@ do
 	
 	dir="${scenario}_${proto}"
 	cd utils/plot
-  mkdir -p $dir
+	mkdir -p $dir
 	lua analisis-boxbox.lua > $dir/$i.txt
 
-  cd $dir
-	#cp ../stats.lua stats.lua
+	cd $dir
+	cp ../stats.lua stats.lua
 	lua stats.lua
 	cd ..
 

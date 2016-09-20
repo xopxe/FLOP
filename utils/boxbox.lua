@@ -69,8 +69,8 @@ local conf = {
   send_views_timeout =  20,
 
   -- buffer size
-  inventory_size = 10,
-  reserved_owns = 10, -- for the messages publishes by the node itself
+  inventory_size = 15,
+  reserved_owns = 15, -- for the messages publishes by the node itself
 
   protocol = proto,
   
@@ -102,9 +102,10 @@ local conf = {
   
   -- routing parameters
   -- flop
-  max_path_count = 4,
+  max_path_count = 8,
   q_decay = 0.9999,
   q_reinf = 0.005,
+  community_detection_window = 10, -- nil to disable
   
   -- ron
 	gamma = 0.99,
@@ -119,7 +120,7 @@ local conf = {
 
   -- epidemic
   transfer_port = 0,
-  --max_hop_count = 5,
+  max_hop_count = math.huge,
 
   
   -- timeout before aborting a chunk download
@@ -201,15 +202,24 @@ if conf.protocol == 'flop' then
     while true do
       sched.sleep(conf.send_views_timeout*5)
          
+      log('TEST', 'INFO', 'COMMUNITY LABEL %s', tostring(rong.community_label))
       for sid, s in pairs(rong.view) do
         local out = {}
         for n, _ in pairs (s.meta.visited) do out[#out+1] = n end
         log('TEST', 'INFO', 'VISITED FOR %s = {%s}', sid, table.concat(out,' '))
         out = {}
+        
         for n, q in pairs (s.meta.q) do out[#out+1] =n..'='..string.format('%.2f',q) end
         log('TEST', 'INFO', 'NODE Qs FOR %s = {%s}', sid, table.concat(out,','))
+        
+        log('TEST', 'INFO', 'NODE SHORTPATH RATIO FOR %s = %s', sid, (s.meta.updated_count or 0) / s.meta.seen_count)
+        
+        log('TEST', 'INFO', 'NODE CENTRALITY FOR %s = %s (%s/%s)', 
+          sid, string.format('%.2f',(s.meta.matching_seen_on_path or 0)/(s.meta.matching_seen or 1)),
+            tostring(s.meta.matching_seen_on_path),
+            tostring(s.meta.matching_seen))
+      
       end
-
     end
   end)
 end
