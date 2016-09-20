@@ -15,6 +15,8 @@ end
 
 local stats={}
 
+local deliveryall = io.open('deliveryall.out', 'a')
+
 stats.median = function ( t )
   local temp={}
   local med, low, high
@@ -40,7 +42,7 @@ stats.median = function ( t )
   
   --print ('!!1', #temp/4)
   --print ('!!2', 3*#temp/4)
-  print ('<'..#temp..'>',table.concat(temp, ' | '))
+  --print ('<'..#temp..'>',table.concat(temp, ' | '))
 
   if #temp%4 == 0 then
     low = ( temp[#temp/4] + temp[#temp/4+1] ) / 2
@@ -104,6 +106,8 @@ on	node3
 local n_sent
 local arrived = {}
 local n_arrvided_st = {}
+local delivery_tot = {}
+local comlabels = {}
 
 local arrived_m = {}
 
@@ -130,6 +134,8 @@ local process_file = function (filename)
       else
         arrived[flow_id][#arrived[flow_id]+1] = tonumber(received)/n_sent
       end
+print('!', filename, flow_id, tonumber(received)/n_sent)
+      deliveryall:write(''..tonumber(received)/n_sent .. '\n')
     end
     
     --arrived:	node1#19	1
@@ -146,6 +152,13 @@ local process_file = function (filename)
         arrived_m[#arrived_m+1] = fid
       end    
       arrived_m[fid][nseq] = arrived_m[fid][nseq] + 1
+      
+      --if nseq%10==5 then 
+        local idt = math.floor(nseq/10)
+        delivery_tot[fid] = delivery_tot[fid] or {}
+        delivery_tot[fid][idt] = delivery_tot[fid][idt] or {}
+        delivery_tot[fid][idt][filenumber] = (delivery_tot[fid][idt][filenumber] or 0) + 1
+      --end
     end
     
     if filenumber>10  then
@@ -201,7 +214,18 @@ local process_file = function (filename)
       end
       
     end
-      
+    
+    --LABEL	1262306304	6	1
+    local label_rec = {}
+    local mid, label
+    ts, mid, label = line:match('^LABEL%s(%S+)%s(%S+)%s(%S+)$')
+    ts, mid = tonumber(ts), tonumber(mid)
+    if ts then
+      --print ('@@',ts, mid, label )
+      comlabels[ts] = comlabels[ts] or {}
+      comlabels[ts][mid] = label
+    end
+    
   end
   
   f:close()
@@ -279,7 +303,7 @@ for _, tsd in ipairs (sv) do
   local mediany, _,_ = stats.avgminmax(v.Y)
   
     
-  print (tsd, medianx, lowx, highx, mediany, lowy, highy)
+  --print (tsd, medianx, lowx, highx, mediany, lowy, highy)
   
   if medianx and lowx and highx and mediany and lowy and highy then
     f:write(tsd..' '..medianx..' '..lowx..' '..highx..' '..mediany..' '..lowy..' '..highy..'\n')
@@ -299,6 +323,42 @@ for k, v in pairs(arrived) do
     f:write(k..' '..med..' '..low..' '..high..' '..med-low..'\n')
   end
   --print ('arrived',k, avg, dev)
+end
+f:close()
+
+f = io.open('community.out', 'w')
+--comlabels[ts][mid]=label
+local labelsort = {}
+for ts, v in pairs(comlabels) do
+  labelsort[#labelsort+1] = {ts=ts, labelreg = v}
+end
+table.sort(labelsort, function(a, b) return a.ts<b.ts end)
+
+local currentlabel =  {} --currentlabel[ts][mid] = label
+for i=0, 13 do currentlabel[i]=i end
+
+for i, reg in ipairs(labelsort) do
+  currentlabel[reg.ts]=currentlabel[reg.ts] or {}
+  for mid, label in pairs(reg.labelreg) do
+    print ('@@@@@@@', reg.ts, mid, label)
+    currentlabel[reg.ts][mid] = label
+  end
+  
+  f:write(reg.ts)
+  for lid=1, 13 do
+    local label =  'node'..lid
+    f:write(tostring(' '..label))
+    local countX, countY = 0,0
+    for mid = 4,8 do
+      if currentlabel[reg.ts][mid] == label then countX=countX+1 end
+    end
+    for mid = 9,13 do
+      if currentlabel[reg.ts][mid] == label then countY=countY+1 end
+    end
+    f:write(tostring(' '..countX..' '..countY))
+  end
+  f:write('\n')
+
 end
 f:close()
 
@@ -382,9 +442,30 @@ for mid=0,5 do
       vv[j] = v[10*mid + j]/filecount
     end
     --local avg, low, high = stats.median(vv)
-    local avg, low, high = stats.avgstd(vv)
+    local avg, _, _= stats.avgstd(vv)
+    local _, low, high = stats.median(vv)   
     f:write(' '..avg..' '..low..' '..high)
   end
   f:write('\n')
 end
 f:close()
+
+
+--delivery_tot[fid][idt][filenumber] = (delivery_tot[fid][idt][filenumber] or 0) + 1
+f = io.open('delivery_w.out', 'w')
+for idt=0, 5 do
+  f:write(''.. idt*10+5 ..' ')
+  for _, fid in pairs(delivery_tot) do
+    local t = {}
+    for _, tots in pairs(fid[idt] or {}) do
+      t[#t+1]=2*tots/20
+    end
+    local avg, low, high = stats.avgstd(t)
+    --local _, low, high = stats.median(t) 
+    f:write(' '..avg..' '..low..' '..high)
+  end
+  f:write('\n')
+end
+f:close()
+
+deliveryall:close()
